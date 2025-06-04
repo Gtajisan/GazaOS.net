@@ -1,294 +1,271 @@
-from pathlib import Path
 
-import zipfile
-
-
-
-# Create project structure
-
-project_root = Path("/mnt/data/gazaos-site")
-
-(project_root / ".github/workflows").mkdir(parents=True, exist_ok=True)
-
-
-
-# Files content
-
-index_html = """<!DOCTYPE html>
-
-<html lang="en">
-
-<head>
-
-  <meta charset="UTF-8" />
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>GazaOS - Custom Android OS</title>
-
-  <link rel="stylesheet" href="style.css" />
-
-</head>
-
-<body>
-
-  <header>
-
-    <h1>GazaOS</h1>
-
-    <nav>
-
-      <a href="#about">About</a>
-
-      <a href="#devices">Supported Devices</a>
-
-      <a href="#community">Community</a>
-
-    </nav>
-
-  </header>
-
-
-
-  <section class="hero">
-
-    <h2>GazaOS</h2>
-
-    <p>Secure. Fast. Open Source.</p>
-
-    <a href="#devices" class="button">Download</a>
-
-  </section>
-
-
-
-  <section id="about">
-
-    <h3>About GazaOS</h3>
-
-    <p>GazaOS is a custom Android operating system focused on privacy, performance, and user control.</p>
-
-  </section>
-
-
-
-  <section id="devices">
-
-    <h3>Supported Devices</h3>
-
-    <ul>
-
-      <li>Pixel 5</li>
-
-      <li>OnePlus 7T</li>
-
-      <li>Samsung Galaxy S10</li>
-
-    </ul>
-
-  </section>
-
-
-
-  <section id="community">
-
-    <h3>Join the Community</h3>
-
-    <p>Follow us on GitHub and contribute to the project!</p>
-
-  </section>
-
-
-
-  <footer>
-
-    <p>&copy; 2025 GazaOS. Built with love and open source.</p>
-
-  </footer>
-
-</body>
-
-</html>"""
-
-
-
-style_css = """body {
-
-  font-family: Arial, sans-serif;
-
-  margin: 0;
-
-  padding: 0;
-
-  background: #f9f9f9;
-
-  color: #222;
-
-}
-
-header {
-
-  background: #222;
-
-  color: #fff;
-
-  padding: 1rem;
-
-  display: flex;
-
-  justify-content: space-between;
-
-  align-items: center;
-
-}
-
-nav a {
-
-  margin: 0 1rem;
-
-  color: #fff;
-
-  text-decoration: none;
-
-}
-
-.hero {
-
-  padding: 2rem;
-
-  background: #009688;
-
-  color: white;
-
-  text-align: center;
-
-}
-
-.button {
-
-  background: white;
-
-  color: #009688;
-
-  padding: 0.5rem 1rem;
-
-  text-decoration: none;
-
-  border-radius: 5px;
-
-}
-
-section {
-
-  padding: 2rem;
-
-}
-
-footer {
-
-  background: #222;
-
-  color: #fff;
-
-  text-align: center;
-
-  padding: 1rem;
-
-}"""
-
-
-
-deploy_yml = """name: Deploy to GitHub Pages
-
-
-
-on:
-
-  push:
-
-    branches:
-
-      - main
-
-
-
-permissions:
-
-  contents: write
-
-
-
-jobs:
-
-  deploy:
-
-    runs-on: ubuntu-latest
-
-    steps:
-
-      - name: Checkout code
-
-        uses: actions/checkout@v3
-
-
-
-      - name: Setup Node.js
-
-        uses: actions/setup-node@v3
-
-        with:
-
-          node-version: '18'
-
-
-
-      - name: Copy site to output folder
-
-        run: |
-
-          mkdir dist
-
-          cp index.html dist/
-
-          cp -r style.css dist/ || true
-
-
-
-      - name: Deploy to GitHub Pages
-
-        uses: peaceiris/actions-gh-pages@v3
-
-        with:
-
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-          publish_dir: ./dist
-
-"""
-
-
-
-# Write files
-
-(project_root / "index.html").write_text(index_html)
-
-(project_root / "style.css").write_text(style_css)
-
-(project_root / ".github/workflows/deploy.yml").write_text(deploy_yml)
-
-
-
-# Create ZIP file
-
-zip_path = "/mnt/data/gazaos-website.zip"
-
-with zipfile.ZipFile(zip_path, 'w') as zipf:
-
-    for path in project_root.rglob("*"):
-
-        zipf.write(path, path.relative_to(project_root))
-
-
-
-zip_path
-                                                           
+import { useState } from 'react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Download, Github, Users, Smartphone, Shield, Zap, Menu, X, ChevronDown, Star } from 'lucide-react';
+
+const Index = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const features = [
+    {
+      icon: <Zap className="h-12 w-12" />,
+      title: "Performance",
+      description: "Optimized for speed and efficiency with enhanced performance tweaks"
+    },
+    {
+      icon: <Shield className="h-12 w-12" />,
+      title: "Security",
+      description: "Latest security patches and privacy enhancements built-in"
+    },
+    {
+      icon: <Smartphone className="h-12 w-12" />,
+      title: "Customization",
+      description: "Extensive customization options to personalize your experience"
+    }
+  ];
+
+  const devices = [
+    { brand: "OnePlus", model: "9 Pro", codename: "lemonadep", maintainer: "John Doe", status: "Official" },
+    { brand: "Google", model: "Pixel 7 Pro", codename: "cheetah", maintainer: "Jane Smith", status: "Official" },
+    { brand: "Samsung", model: "Galaxy S22", codename: "dm1q", maintainer: "Bob Wilson", status: "Unofficial" },
+    { brand: "Xiaomi", model: "Mi 11", codename: "venus", maintainer: "Alice Chen", status: "Official" },
+    { brand: "OnePlus", model: "8T", codename: "kebab", maintainer: "Mike Johnson", status: "Official" },
+    { brand: "Pixel", model: "6 Pro", codename: "raven", maintainer: "Sarah Lee", status: "Official" },
+  ];
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Navigation */}
+      <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <div className="flex items-center">
+              <div className="flex-shrink-0 flex items-center">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+                  <span className="text-white font-bold text-sm">G</span>
+                </div>
+                <span className="text-xl font-bold text-gray-900">gazaOS</span>
+              </div>
+            </div>
+            
+            <div className="hidden md:block">
+              <div className="ml-10 flex items-baseline space-x-8">
+                <a href="#" className="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium">Home</a>
+                <a href="#features" className="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium">Features</a>
+                <a href="#downloads" className="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium">Downloads</a>
+                <a href="#" className="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium">Blog</a>
+                <a href="#" className="text-gray-600 hover:text-blue-600 px-3 py-2 text-sm font-medium">Donate</a>
+                <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                  <Github className="h-4 w-4 mr-2" />
+                  GitHub
+                </Button>
+              </div>
+            </div>
+
+            <div className="md:hidden">
+              <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="text-gray-600 hover:text-gray-900 focus:outline-none"
+              >
+                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden">
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-b">
+              <a href="#" className="text-gray-600 hover:text-blue-600 block px-3 py-2 text-base font-medium">Home</a>
+              <a href="#features" className="text-gray-600 hover:text-blue-600 block px-3 py-2 text-base font-medium">Features</a>
+              <a href="#downloads" className="text-gray-600 hover:text-blue-600 block px-3 py-2 text-base font-medium">Downloads</a>
+              <a href="#" className="text-gray-600 hover:text-blue-600 block px-3 py-2 text-base font-medium">Blog</a>
+              <a href="#" className="text-gray-600 hover:text-blue-600 block px-3 py-2 text-base font-medium">Donate</a>
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* Hero Section */}
+      <section className="bg-gradient-to-br from-blue-50 to-indigo-100 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <div className="mb-8">
+              <div className="w-32 h-32 bg-blue-600 rounded-full mx-auto flex items-center justify-center mb-6">
+                <span className="text-4xl font-bold text-white">G</span>
+              </div>
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+              gazaOS
+            </h1>
+            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
+              A custom Android ROM focused on performance, reliability, and customization. 
+              Built for users who demand the best from their Android experience.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+                <Download className="h-5 w-5 mr-2" />
+                Download Latest
+              </Button>
+              <Button size="lg" variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+                View on GitHub
+              </Button>
+            </div>
+            
+            {/* Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-3xl mx-auto">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-blue-600">50,000+</div>
+                <div className="text-gray-600">Active Users</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-blue-600">25+</div>
+                <div className="text-gray-600">Supported Devices</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-blue-600">100+</div>
+                <div className="text-gray-600">Contributors</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Why Choose gazaOS?</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Built with performance, security, and user experience as our top priorities
+            </p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <div key={index} className="text-center p-8 rounded-lg hover:shadow-lg transition-shadow">
+                <div className="text-blue-600 mb-6 flex justify-center">
+                  {feature.icon}
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">{feature.title}</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  {feature.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Downloads Section */}
+      <section id="downloads" className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Supported Devices</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Find your device and download the latest build
+            </p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Brand</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Device</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Codename</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Maintainer</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Download</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white divide-y divide-gray-200">
+                  {devices.map((device, index) => (
+                    <tr key={index} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{device.brand}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{device.model}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">{device.codename}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{device.maintainer}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <Badge 
+                          variant={device.status === 'Official' ? 'default' : 'secondary'}
+                          className={device.status === 'Official' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}
+                        >
+                          {device.status}
+                        </Badge>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <Button size="sm" variant="outline" className="border-blue-600 text-blue-600 hover:bg-blue-50">
+                          <Download className="h-4 w-4 mr-1" />
+                          Download
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div className="col-span-2">
+              <div className="flex items-center mb-4">
+                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+                  <span className="text-white font-bold text-sm">G</span>
+                </div>
+                <span className="text-xl font-bold">gazaOS</span>
+              </div>
+              <p className="text-gray-400 mb-4">
+                A custom Android ROM focused on performance, reliability, and customization.
+              </p>
+              <div className="flex space-x-4">
+                <a href="#" className="text-gray-400 hover:text-white">
+                  <Github className="h-5 w-5" />
+                </a>
+                <a href="#" className="text-gray-400 hover:text-white">
+                  <Users className="h-5 w-5" />
+                </a>
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="text-white font-semibold mb-4">Project</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-gray-400 hover:text-white">Downloads</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white">Documentation</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white">Source Code</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white">Changelog</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="text-white font-semibold mb-4">Community</h3>
+              <ul className="space-y-2">
+                <li><a href="#" className="text-gray-400 hover:text-white">Telegram</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white">Discord</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white">XDA Forums</a></li>
+                <li><a href="#" className="text-gray-400 hover:text-white">Reddit</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center">
+            <p className="text-gray-400">
+              &copy; 2024 gazaOS Project. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default Index;
