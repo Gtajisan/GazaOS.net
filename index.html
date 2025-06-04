@@ -1,0 +1,294 @@
+from pathlib import Path
+
+import zipfile
+
+
+
+# Create project structure
+
+project_root = Path("/mnt/data/gazaos-site")
+
+(project_root / ".github/workflows").mkdir(parents=True, exist_ok=True)
+
+
+
+# Files content
+
+index_html = """<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>GazaOS - Custom Android OS</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+</head>
+
+<body>
+
+  <header>
+
+    <h1>GazaOS</h1>
+
+    <nav>
+
+      <a href="#about">About</a>
+
+      <a href="#devices">Supported Devices</a>
+
+      <a href="#community">Community</a>
+
+    </nav>
+
+  </header>
+
+
+
+  <section class="hero">
+
+    <h2>GazaOS</h2>
+
+    <p>Secure. Fast. Open Source.</p>
+
+    <a href="#devices" class="button">Download</a>
+
+  </section>
+
+
+
+  <section id="about">
+
+    <h3>About GazaOS</h3>
+
+    <p>GazaOS is a custom Android operating system focused on privacy, performance, and user control.</p>
+
+  </section>
+
+
+
+  <section id="devices">
+
+    <h3>Supported Devices</h3>
+
+    <ul>
+
+      <li>Pixel 5</li>
+
+      <li>OnePlus 7T</li>
+
+      <li>Samsung Galaxy S10</li>
+
+    </ul>
+
+  </section>
+
+
+
+  <section id="community">
+
+    <h3>Join the Community</h3>
+
+    <p>Follow us on GitHub and contribute to the project!</p>
+
+  </section>
+
+
+
+  <footer>
+
+    <p>&copy; 2025 GazaOS. Built with love and open source.</p>
+
+  </footer>
+
+</body>
+
+</html>"""
+
+
+
+style_css = """body {
+
+  font-family: Arial, sans-serif;
+
+  margin: 0;
+
+  padding: 0;
+
+  background: #f9f9f9;
+
+  color: #222;
+
+}
+
+header {
+
+  background: #222;
+
+  color: #fff;
+
+  padding: 1rem;
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+}
+
+nav a {
+
+  margin: 0 1rem;
+
+  color: #fff;
+
+  text-decoration: none;
+
+}
+
+.hero {
+
+  padding: 2rem;
+
+  background: #009688;
+
+  color: white;
+
+  text-align: center;
+
+}
+
+.button {
+
+  background: white;
+
+  color: #009688;
+
+  padding: 0.5rem 1rem;
+
+  text-decoration: none;
+
+  border-radius: 5px;
+
+}
+
+section {
+
+  padding: 2rem;
+
+}
+
+footer {
+
+  background: #222;
+
+  color: #fff;
+
+  text-align: center;
+
+  padding: 1rem;
+
+}"""
+
+
+
+deploy_yml = """name: Deploy to GitHub Pages
+
+
+
+on:
+
+  push:
+
+    branches:
+
+      - main
+
+
+
+permissions:
+
+  contents: write
+
+
+
+jobs:
+
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout code
+
+        uses: actions/checkout@v3
+
+
+
+      - name: Setup Node.js
+
+        uses: actions/setup-node@v3
+
+        with:
+
+          node-version: '18'
+
+
+
+      - name: Copy site to output folder
+
+        run: |
+
+          mkdir dist
+
+          cp index.html dist/
+
+          cp -r style.css dist/ || true
+
+
+
+      - name: Deploy to GitHub Pages
+
+        uses: peaceiris/actions-gh-pages@v3
+
+        with:
+
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+          publish_dir: ./dist
+
+"""
+
+
+
+# Write files
+
+(project_root / "index.html").write_text(index_html)
+
+(project_root / "style.css").write_text(style_css)
+
+(project_root / ".github/workflows/deploy.yml").write_text(deploy_yml)
+
+
+
+# Create ZIP file
+
+zip_path = "/mnt/data/gazaos-website.zip"
+
+with zipfile.ZipFile(zip_path, 'w') as zipf:
+
+    for path in project_root.rglob("*"):
+
+        zipf.write(path, path.relative_to(project_root))
+
+
+
+zip_path
+                                                           
